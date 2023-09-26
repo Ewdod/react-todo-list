@@ -7,10 +7,41 @@ import { useState } from "react";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-  const [sayi, setSayi] = useState(7);
-  const numberChanged = function (e) {
-    setSayi(e.target.value);
-  };
+  // // reactta bunlara hook denir
+  // const [sayi, setSayi] = useState(7);
+  // const numberChanged = function (e) {
+  //   setSayi(e.target.value);
+
+  const [title, setTitle] = useState("");
+  const [todos, setTodos] = useState([
+    { title: "Do your homework", done: false },
+    { title: " Wash the dishes", done: false },
+    { title: " Watch netflix", done: true },
+    { title: "Walk in the park", done: true },
+  ]);
+  const handleSubmit = function (e) {
+    e.preventDefault(); 
+    setTodos ([...todos, {title: title, done: false}]); 
+    setTitle("")};
+
+    const handleCheckChange = function(e,index){
+      const newTodos = [...todos];
+      newTodos[index].done = e.target.checked;
+      setTodos(newTodos);
+
+    };
+
+    const handleDelete = function(e,index){
+      const newTodos = [...todos];
+      newTodos.splice(index,1);
+      setTodos(newTodos);
+    };
+  // bu yontemi tercih etmiyoruz
+
+  // const divler = [];
+  // for(const todo of todos){
+  //   divler.push(<div>{todo.title}</div>);
+  // };
   return (
     <>
       <Head>
@@ -22,9 +53,36 @@ export default function Home() {
       <main className={`${styles.main} ${inter.className}`}>
         <h1>ToDo List</h1>
 
+        <form onSubmit={handleSubmit}>
+          <div>
+            <input
+              type="text"
+              placeholder="What are you going to do?"
+              required
+              onChange={(e) => setTitle(e.target.value)}
+              value={title}
+            ></input>{" "}
+            <button type="submit">Add</button>
+            <p> {title}</p>
+          </div>
+        </form>
+        {/* {divler} */}
+        <div className="todos">
+          {todos.map((todo, i) => (
+            <div key={i} className={styles.todoItem + " " + (todo.done ? styles.done : styles.undone)}>
+              <input type="checkbox" checked= {todo.done}
+              onChange={(e)=> handleCheckChange(e,i)} />{" "}
+              <span>{todo.title}</span>{" "}
+              <button onClick={(e) => handleDelete(e,i)}>&times;</button>
+            </div>
+          ))}
+        </div>
+
+        {/* 
         <input type="number" value={sayi} onChange={numberChanged} />
         <p> Girilen Deger:{sayi}</p>
+        <p> Girilen sayi bir {sayi %2 == 0 ? "Cift" : "Tek"}</p> */}
       </main>
     </>
   );
-}
+};
